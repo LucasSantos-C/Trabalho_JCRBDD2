@@ -1,4 +1,8 @@
 # Trabalho_JCRBDD2
 Objetivo do Sistema: Implantar um sistema para uma oficina mecânica automotiva
 
-Integrantes: Lucas, Aron, Victor Abrahao e Pedro Seene
+## Integrantes: 
+<li>Lucas</li>
+<li>Aron</li>
+<li>Victor Abrahao</li>
+<li>Pedro Seene</li>
