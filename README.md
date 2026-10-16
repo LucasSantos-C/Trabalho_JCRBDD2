@@ -5,4 +5,4 @@ Objetivo do Sistema: Implantar um sistema para uma oficina mecânica automotiva
 <li>Lucas</li>
 <li>Aron</li>
 <li>Victor Abrahao</li>
-<li>Pedro Seene</li>
+<li>Pedro Senne</li>
