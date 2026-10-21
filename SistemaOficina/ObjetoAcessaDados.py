@@ -73,7 +73,10 @@ class ObjetoAcessaDados:
                 status TEXT,
                 id_mecanico INTEGER,
                 placa_carro TEXT,
-                cpf_cliente TEXT
+                cpf_cliente TEXT,
+                FOREIGN KEY (id_mecanico) REFERENCES mecanico(id),
+                FOREIGN KEY (placa_carro) REFERENCES carro(placa),
+                FOREIGN KEY (cpf_cliente) REFERENCES cliente(cpf)
             );""")
 
         self.executar_sql("""
@@ -81,7 +84,8 @@ class ObjetoAcessaDados:
                 id_atendimento INTEGER,
                 data_abertura TEXT,
                 data_fechamento TEXT,
-                desc_atendimento TEXT
+                desc_atendimento TEXT,
+                FOREIGN KEY (id_atendimento) REFERENCES atendimento(id)
             );""")
 
     def set(self, tabela, dados):
