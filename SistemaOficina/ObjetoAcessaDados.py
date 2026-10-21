@@ -114,6 +114,44 @@ class ObjetoAcessaDados:
         resultado = self.executar_sql(sql, (valor_criterio,))
         return resultado if resultado else False
 
+    def listar_clientes(self):
+        sql = "SELECT cpf, nome, telefone, endereco FROM cliente ORDER BY nome"
+        return self.executar_sql(sql)
+
+    def listar_carros(self):
+        sql = "SELECT placa, modelo, cor, ano, marca FROM carro ORDER BY placa"
+        return self.executar_sql(sql)
+
+    def listar_mecanicos(self):
+        sql = "SELECT id, nome, telefone, especialidade FROM mecanico ORDER BY nome"
+        return self.executar_sql(sql)
+
+    def listar_pecas(self):
+        sql = "SELECT id, tipo, modelo, qtd FROM peca ORDER BY tipo, modelo"
+        return self.executar_sql(sql)
+
+    def listar_atendimentos(self):
+        sql = """
+            SELECT a.id, a.status, a.id_mecanico, m.nome AS nome_mecanico,
+                   a.placa_carro, c.modelo AS modelo_carro,
+                   a.cpf_cliente, cl.nome AS nome_cliente
+            FROM atendimento AS a
+            LEFT JOIN mecanico AS m ON m.id = a.id_mecanico
+            LEFT JOIN carro AS c ON c.placa = a.placa_carro
+            LEFT JOIN cliente AS cl ON cl.cpf = a.cpf_cliente
+            ORDER BY a.id DESC
+        """
+        return self.executar_sql(sql)
+
+    def buscar_historico_atendimento(self, id_atendimento):
+        sql = """
+            SELECT id_atendimento, data_abertura, data_fechamento, desc_atendimento
+            FROM historico_atendimento
+            WHERE id_atendimento = ?
+            ORDER BY data_abertura DESC
+        """
+        return self.executar_sql(sql, (id_atendimento,)
+
     def get_pecas_do_carro(self, placa_carro):
         sql = """
             SELECT p.id, p.tipo, p.modelo, pc.qtdpeca 
