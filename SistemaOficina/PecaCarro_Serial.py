@@ -1,6 +1,7 @@
-from dataclasses import asdict, classmethod
+from dataclasses import asdict, dataclass
 import json
 
+@dataclass
 class PecaCarro_Serial:
     def __init__(self, id_peca, peca_carro, qtdpeca):
         self.id_peca = id_peca

@@ -1,6 +1,7 @@
 from dataclasses import asdict, dataclass
 import json
 
+@dataclass
 class Cliente_Serial:
     def __init__(self, cpf=None, nome=None, telefone=None, endereco=None):
         self.cpf = cpf

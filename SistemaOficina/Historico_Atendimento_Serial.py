@@ -1,7 +1,8 @@
-from dataclasses import asdict, classmethod
+from dataclasses import asdict, dataclass
 import json
 
-class Mecanico_Serial:
+@dataclass
+class Historico_Atendimento_Serial:
     def __init__(self, data_abertura, data_fechamento, id_atendimento, desc_atendimento):
         self.data_abertura = data_abertura
         self.data_fechamento = data_fechamento
@@ -15,5 +16,5 @@ class Mecanico_Serial:
         return json.dumps(asdict(self), ensure_ascii=False)
         
     @classmethod
-    def de_dict(cls, dados: dict) -> "Mecanico_Serial":
+    def de_dict(cls, dados: dict) -> "Historico_Atendimento_Serial":
         return cls(**dados)

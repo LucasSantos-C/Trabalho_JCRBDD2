@@ -1,11 +1,12 @@
-from dataclasses import asdict, classmethod
+from dataclasses import asdict, dataclass
 import json
 
-class PecaCarro_Serial:
-    def __init__(self, id_peca, peca_carro, qtdpeca):
-        self.id_peca = id_peca
-        self.peca_carro = peca_carro
-        self.qtdpeca = qtdpeca
+@dataclass
+class Mecanico_Serial:
+    def __init__(self, id, nome, telefone, especialidade):
+        self.id = id
+        self.nome = nome
+        self.telefone = telefone
 
     def para_dict(self) -> dict:
         return asdict(self)
@@ -14,5 +15,5 @@ class PecaCarro_Serial:
         return json.dumps(asdict(self), ensure_ascii=False)
     
     @classmethod
-    def de_dict(cls, dados: dict) -> "PecaCarro_Serial":
+    def de_dict(cls, dados: dict) -> "Mecanico_Serial":
         return cls(**dados)

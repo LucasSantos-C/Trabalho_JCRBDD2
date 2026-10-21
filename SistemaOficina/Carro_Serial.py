@@ -1,6 +1,7 @@
-from dataclasses import asdict, classmethod
+from dataclasses import asdict, dataclass
 import json
 
+@dataclass
 class Carro_Serial:
     def __init__(self, modelo, cor, placa, ano, marca):
         self.modelo = modelo
