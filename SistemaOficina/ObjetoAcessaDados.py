@@ -23,7 +23,7 @@ class ObjetoAcessaDados:
             print(f"Erro ao executar SQL: {erro}")
             return False
 
-def criar_tabelas(self):
+    def criar_tabelas(self):
         try:
             with self.conectar() as conexao:
                 conexao.executescript("""
