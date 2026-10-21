@@ -147,3 +147,25 @@ class ObjetoAcessaDados:
         """
         resultado = self.executar_sql(sql, (id_atendimento,))
         return resultado[0] if resultado else False
+
+def get_historico_por_cliente(self, cpf_cliente):
+        sql = """
+            SELECT 
+                carro.placa,
+                carro.marca,
+                carro.modelo,
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                mecanico.nome AS nome_mecanico,
+                historico_atendimento.data_abertura,
+                historico_atendimento.data_fechamento,
+                historico_atendimento.desc_atendimento
+            FROM cliente
+            JOIN atendimento ON cliente.cpf = atendimento.cpf_cliente
+            JOIN carro ON atendimento.placa_carro = carro.placa
+            JOIN mecanico ON atendimento.id_mecanico = mecanico.id
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE cliente.cpf = ?
+            ORDER BY historico_atendimento.data_abertura DESC
+        """
+        return self.executar_sql(sql, (cpf_cliente,))
