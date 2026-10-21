@@ -23,70 +23,69 @@ class ObjetoAcessaDados:
             print(f"Erro ao executar SQL: {erro}")
             return False
 
-    def criar_tabelas(self):
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS cliente (
-                cpf TEXT PRIMARY KEY,
-                nome TEXT NOT NULL,
-                telefone TEXT,
-                endereco TEXT
-            );""")
-        
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS carro (
-                placa TEXT PRIMARY KEY,
-                modelo TEXT,
-                cor TEXT,
-                ano INTEGER,
-                marca TEXT
-            );""")
-        
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS mecanico (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                telefone TEXT,
-                especialidade TEXT
-            );""")
-        
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS peca (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                tipo TEXT,
-                modelo TEXT,
-                qtd INTEGER
-            );""")
+def criar_tabelas(self):
+        try:
+            with self.conectar() as conexao:
+                conexao.executescript("""
+                    CREATE TABLE IF NOT EXISTS cliente (
+                        cpf TEXT PRIMARY KEY,
+                        nome TEXT NOT NULL,
+                        telefone TEXT,
+                        endereco TEXT
+                    );
+                    
+                    CREATE TABLE IF NOT EXISTS carro (
+                        placa TEXT PRIMARY KEY,
+                        modelo TEXT,
+                        cor TEXT,
+                        ano INTEGER,
+                        marca TEXT
+                    );
+                    
+                    CREATE TABLE IF NOT EXISTS mecanico (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nome TEXT NOT NULL,
+                        telefone TEXT,
+                        especialidade TEXT
+                    );
+                    
+                    CREATE TABLE IF NOT EXISTS peca (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        tipo TEXT,
+                        modelo TEXT,
+                        qtd INTEGER
+                    );
 
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS peca_carro (
-                id_peca INTEGER,
-                placa_carro TEXT,
-                qtdpeca INTEGER,
-                PRIMARY KEY (id_peca, placa_carro),
-                FOREIGN KEY(id_peca) REFERENCES peca(id),
-                FOREIGN KEY(placa_carro) REFERENCES carro(placa)
-            );""")
-        
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS atendimento (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                status TEXT,
-                id_mecanico INTEGER,
-                placa_carro TEXT,
-                cpf_cliente TEXT,
-                FOREIGN KEY (id_mecanico) REFERENCES mecanico(id),
-                FOREIGN KEY (placa_carro) REFERENCES carro(placa),
-                FOREIGN KEY (cpf_cliente) REFERENCES cliente(cpf)
-            );""")
+                    CREATE TABLE IF NOT EXISTS peca_carro (
+                        id_peca INTEGER,
+                        placa_carro TEXT,
+                        qtdpeca INTEGER,
+                        PRIMARY KEY (id_peca, placa_carro),
+                        FOREIGN KEY (id_peca) REFERENCES peca(id),
+                        FOREIGN KEY (placa_carro) REFERENCES carro(placa)
+                    );
+                    
+                    CREATE TABLE IF NOT EXISTS atendimento (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        status TEXT,
+                        id_mecanico INTEGER,
+                        placa_carro TEXT,
+                        cpf_cliente TEXT,
+                        FOREIGN KEY (id_mecanico) REFERENCES mecanico(id),
+                        FOREIGN KEY (placa_carro) REFERENCES carro(placa),
+                        FOREIGN KEY (cpf_cliente) REFERENCES cliente(cpf)
+                    );
 
-        self.executar_sql("""
-            CREATE TABLE IF NOT EXISTS historico_atendimento (
-                id_atendimento INTEGER,
-                data_abertura TEXT,
-                data_fechamento TEXT,
-                desc_atendimento TEXT,
-                FOREIGN KEY (id_atendimento) REFERENCES atendimento(id)
-            );""")
+                    CREATE TABLE IF NOT EXISTS historico_atendimento (
+                        id_atendimento INTEGER,
+                        data_abertura TEXT,
+                        data_fechamento TEXT,
+                        desc_atendimento TEXT,
+                        FOREIGN KEY (id_atendimento) REFERENCES atendimento(id)
+                    );
+                """)
+        except sqlite3.Error as erro:
+            print(f"Erro ao criar tabelas: {erro}")
 
     def set(self, tabela, dados):
         colunas = ", ".join(dados.keys())
