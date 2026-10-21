@@ -29,7 +29,7 @@ class ObjetoAcessaDados:
                 cpf TEXT PRIMARY KEY,
                 nome TEXT NOT NULL,
                 telefone TEXT,
-                endereco TEXT,
+                endereco TEXT
             );
         """)
         
@@ -39,7 +39,7 @@ class ObjetoAcessaDados:
                 modelo TEXT,
                 cor TEXT,
                 ano INTEGER,
-                marca TEXT,
+                marca TEXT
             );
         """)
         
@@ -48,7 +48,7 @@ class ObjetoAcessaDados:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 telefone TEXT,
-                especialidade TEXT,
+                especialidade TEXT
             );
         """)
         
@@ -57,7 +57,7 @@ class ObjetoAcessaDados:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tipo TEXT,
                 modelo TEXT,
-                qtd INTEGER,
+                qtd INTEGER
             );
         """)
 
@@ -68,7 +68,7 @@ class ObjetoAcessaDados:
                 qtdpeca INTEGER,
                 PRIMARY KEY (id_peca, placa_carro),
                 FOREIGN KEY(id_peca) REFERENCES peca(id),
-                FOREIGN KEY(placa_carro) REFERENCES carro(placa),
+                FOREIGN KEY(placa_carro) REFERENCES carro(placa)
             );
         """)
         
@@ -78,7 +78,7 @@ class ObjetoAcessaDados:
                 status TEXT,
                 id_mecanico INTEGER,
                 placa_carro TEXT,
-                cpf_cliente TEXT,
+                cpf_cliente TEXT
             );
         """)
 
@@ -87,7 +87,7 @@ class ObjetoAcessaDados:
                 id_atendimento INTEGER,
                 data_abertura TEXT,
                 data_fechamento TEXT,
-                desc_atendimento TEXT,
+                desc_atendimento TEXT
             );
         """)
 
