@@ -169,3 +169,95 @@ def get_historico_por_cliente(self, cpf_cliente):
             ORDER BY historico_atendimento.data_abertura DESC
         """
         return self.executar_sql(sql, (cpf_cliente,))
+
+    def get_historico_por_carro(self, placa_carro):
+        sql = """
+            SELECT 
+                carro.placa,
+                carro.marca,
+                carro.modelo,
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                cliente.nome AS nome_cliente,
+                mecanico.nome AS nome_mecanico,
+                historico_atendimento.data_abertura,
+                historico_atendimento.data_fechamento,
+                historico_atendimento.desc_atendimento
+            FROM carro
+            JOIN atendimento ON carro.placa = atendimento.placa_carro
+            JOIN cliente ON atendimento.cpf_cliente = cliente.cpf
+            JOIN mecanico ON atendimento.id_mecanico = mecanico.id
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE carro.placa = ?
+            ORDER BY historico_atendimento.data_abertura DESC
+        """
+        return self.executar_sql(sql, (placa_carro,))
+
+    def get_historico_por_mecanico(self, id_mecanico):
+        sql = """
+            SELECT 
+                mecanico.id AS id_mecanico,
+                mecanico.nome AS nome_mecanico,
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                carro.placa,
+                carro.modelo AS modelo_carro,
+                cliente.nome AS nome_cliente,
+                historico_atendimento.data_abertura,
+                historico_atendimento.data_fechamento,
+                historico_atendimento.desc_atendimento
+            FROM mecanico
+            JOIN atendimento ON mecanico.id = atendimento.id_mecanico
+            JOIN carro ON atendimento.placa_carro = carro.placa
+            JOIN cliente ON atendimento.cpf_cliente = cliente.cpf
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE mecanico.id = ?
+            ORDER BY historico_atendimento.data_abertura DESC
+        """
+        return self.executar_sql(sql, (id_mecanico,))
+
+    def get_historico_por_peca(self, id_peca):
+        sql = """
+            SELECT 
+                peca.id AS id_peca,
+                peca.tipo AS tipo_peca,
+                peca.modelo AS modelo_peca,
+                peca_carro.qtdpeca,
+                carro.placa,
+                carro.modelo AS modelo_carro,
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                cliente.nome AS nome_cliente,
+                historico_atendimento.data_abertura,
+                historico_atendimento.desc_atendimento
+            FROM peca
+            JOIN peca_carro ON peca.id = peca_carro.id_peca
+            JOIN carro ON peca_carro.placa_carro = carro.placa
+            JOIN atendimento ON carro.placa = atendimento.placa_carro
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE peca.id = ?
+            ORDER BY historico_atendimento.data_abertura DESC
+        """
+        return self.executar_sql(sql, (id_peca,))
+
+    def get_historico_por_status(self, status_atendimento):
+        sql = """
+            SELECT 
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                carro.placa,
+                carro.modelo AS modelo_carro,
+                cliente.nome AS nome_cliente,
+                mecanico.nome AS nome_mecanico,
+                historico_atendimento.data_abertura,
+                historico_atendimento.data_fechamento,
+                historico_atendimento.desc_atendimento
+            FROM atendimento
+            JOIN carro ON atendimento.placa_carro = carro.placa
+            JOIN cliente ON atendimento.cpf_cliente = cliente.cpf
+            JOIN mecanico ON atendimento.id_mecanico = mecanico.id
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE atendimento.status = ?
+            ORDER BY historico_atendimento.data_abertura DESC
+        """
+        return self.executar_sql(sql, (status_atendimento,))
