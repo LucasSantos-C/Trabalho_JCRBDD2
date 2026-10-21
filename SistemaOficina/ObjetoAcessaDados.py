@@ -148,7 +148,7 @@ class ObjetoAcessaDados:
         resultado = self.executar_sql(sql, (id_atendimento,))
         return resultado[0] if resultado else False
 
-def get_historico_por_cliente(self, cpf_cliente):
+    def get_historico_por_cliente(self, cpf_cliente):
         sql = """
             SELECT 
                 carro.placa,
