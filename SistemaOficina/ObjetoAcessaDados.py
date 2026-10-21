@@ -122,3 +122,28 @@ class ObjetoAcessaDados:
             WHERE pc.placa_carro = ?
         """
         return self.executar_sql(sql, (placa_carro,))
+
+    def get_detalhes_atendimento(self, id_atendimento):
+        sql = """
+            SELECT 
+                atendimento.id AS id_atendimento,
+                atendimento.status,
+                cliente.nome AS nome_cliente,
+                cliente.telefone AS telefone_cliente,
+                carro.placa,
+                carro.marca,
+                carro.modelo,
+                mecanico.nome AS nome_mecanico,
+                mecanico.especialidade AS especialidade_mecanico,
+                historico_atendimento.data_abertura,
+                historico_atendimento.data_fechamento,
+                historico_atendimento.desc_atendimento
+            FROM atendimento
+            JOIN cliente ON atendimento.cpf_cliente = cliente.cpf
+            JOIN carro ON atendimento.placa_carro = carro.placa
+            JOIN mecanico ON atendimento.id_mecanico = mecanico.id
+            LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
+            WHERE atendimento.id = ?
+        """
+        resultado = self.executar_sql(sql, (id_atendimento,))
+        return resultado[0] if resultado else False
