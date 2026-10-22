@@ -8,12 +8,12 @@ class Cliente_Serial:
     telefone: str = None
     endereco: str = None
 
-    def para_dict(self) -> dict:
+    def para_dict(self):
         return asdict(self)
     
-    def para_json(self) -> str:
+    def para_json(self):
         return json.dumps(asdict(self), ensure_ascii=False)
 
     @classmethod
-    def de_dict(cls, dados: dict) -> "Cliente_Serial":
+    def de_dict(cls, dados: dict):
         return cls(**dados)
