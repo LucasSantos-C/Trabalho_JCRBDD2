@@ -25,6 +25,23 @@ class ObjetoAcessaDados:
         except sqlite3.Error as erro:
             raise RuntimeError(f"Erro ao acessar o banco de dados: {erro}") from erro
 
+    def executar_transacao(self, operacoes):
+        try:
+            with self.conectar() as conexao:
+                cursor = conexao.cursor()
+                resultados = []
+                for sql, parametros in operacoes:
+                    cursor.execute(sql, parametros)
+                    resultados.append(cursor.lastrowid)
+                conexao.commit()
+                return resultados
+        except sqlite3.IntegrityError as erro:
+            conexao.rollback()
+            raise ValueError(f"Operação não permitida pelo banco de dados: {erro}") from erro
+        except sqlite3.Error as erro:
+            conexao.rollback()
+            raise RuntimeError(f"Erro ao acessar o banco de dados: {erro}") from erro
+
     def criar_tabelas(self):
         try:
             with self.conectar() as conexao:
