@@ -3,16 +3,15 @@ import json
 
 @dataclass
 class Mecanico_Serial:
-    def __init__(self, id, nome, telefone, especialidade):
-        self.id = id
-        self.nome = nome
-        self.telefone = telefone
-        self.especilidade = especialidade
+    id: int = None
+    nome: str = None
+    telefone: str = None
+    especialidade: str = None
 
     def para_dict(self) -> dict:
         return asdict(self)
         
-    def para_json(self) -> dict:
+    def para_json(self) -> str:
         return json.dumps(asdict(self), ensure_ascii=False)
     
     @classmethod
