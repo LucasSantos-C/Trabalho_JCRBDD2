@@ -3,17 +3,16 @@ import json
 
 @dataclass
 class Carro_Serial:
-    def __init__(self, modelo, cor, placa, ano, marca):
-        self.modelo = modelo
-        self.cor = cor
-        self.placa = placa
-        self.ano = ano
-        self.marca = marca
+    modelo: str = None
+    cor: str = None
+    placa: str = None
+    ano: int = None
+    marca: str = None
 
     def para_dict(self) -> dict:
         return asdict(self)
         
-    def para_json(self) -> dict:
+    def para_json(self) -> str:
         return json.dumps(asdict(self), ensure_ascii=False)
     
     @classmethod
