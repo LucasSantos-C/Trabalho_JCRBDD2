@@ -1,5 +1,11 @@
 from datetime import datetime
 from ObjetoAcessaDados import ObjetoAcessaDados
+from Cliente_Serial import Cliente_Serial
+from Carro_Serial import Carro_Serial
+from Mecanico_Serial import Mecanico_Serial
+from Peca_Serial import Peca_Serial
+from PecaCarro_Serial import PecaCarro_Serial
+from Historico_Atendimento_Serial import Historico_Atendimento_Serial
 
 
 class Controlador:
@@ -38,11 +44,11 @@ class Controlador:
         return self.buscar_cliente(cpf.strip())
 
     def listar_clientes(self):
-        return self.bd.listar_clientes()
+        return [Cliente_Serial.de_dict(c) for c in self.bd.listar_clientes()]
 
     def buscar_cliente(self, cpf):
         resultado = self.bd.get_por_coluna("cliente", "cpf", cpf)
-        return resultado[0] if resultado else None
+        return Cliente_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_cliente(self, cpf, nome, telefone=None, endereco=None):
         self._exigir(cpf, "CPF")
@@ -88,11 +94,11 @@ class Controlador:
         return self.buscar_carro(placa)
 
     def listar_carros(self):
-        return self.bd.listar_carros()
+        return [Carro_Serial.de_dict(c) for c in self.bd.listar_carros()]
 
     def buscar_carro(self, placa):
         resultado = self.bd.get_por_coluna("carro", "placa", placa.strip().upper())
-        return resultado[0] if resultado else None
+        return Carro_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_carro(self, placa, modelo, cor=None, ano=None, marca=None):
         self._exigir(placa, "placa")
@@ -119,10 +125,15 @@ class Controlador:
             raise ValueError("Carro não encontrado.")
         return carro
 
+    def excluir_carro(self, placa):
+        self._exigir(placa, "placa")
+        self.bd.delete("carro", "placa", placa.strip().upper())
+        return True
+
     # ---------- Mecânicos ----------
     def cadastrar_mecanico(self, nome, telefone=None, especialidade=None):
         self._exigir(nome, "nome")
-        self.bd.set(
+        identificador = self.bd.set(
             "mecanico",
             {
                 "nome": nome.strip(),
@@ -130,19 +141,14 @@ class Controlador:
                 "especialidade": especialidade,
             },
         )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM mecanico WHERE nome = ? ORDER BY id DESC LIMIT 1",
-            (nome.strip(),),
-        )
-        identificador = resultado[0]["id"] if resultado else None
         return self.buscar_mecanico(identificador)
-
+        
     def listar_mecanicos(self):
-        return self.bd.listar_mecanicos()
+        return [Mecanico_Serial.de_dict(m) for m in self.bd.listar_mecanicos()]
 
     def buscar_mecanico(self, id_mecanico):
         resultado = self.bd.get_por_coluna("mecanico", "id", id_mecanico)
-        return resultado[0] if resultado else None
+        return Mecanico_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_mecanico(self, id_mecanico, nome, telefone=None, especialidade=None):
         self._exigir(nome, "nome")
@@ -161,26 +167,26 @@ class Controlador:
             raise ValueError("Mecânico não encontrado.")
         return mecanico
 
+    def excluir_mecanico(self, id_mecanico):
+        self._exigir(id_mecanico, "ID do mecânico")
+        self.bd.delete("mecanico", "id", id_mecanico)
+        return True
+
     # ---------- Peças e estoque ----------
     def cadastrar_peca(self, tipo, modelo=None, qtd=0):
         self._exigir(tipo, "tipo")
         qtd = self._validar_quantidade(qtd, "quantidade")
-        self.bd.set(
+        identificador = self.bd.set(
             "peca", {"tipo": tipo.strip(), "modelo": modelo, "qtd": qtd}
         )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM peca WHERE tipo = ? ORDER BY id DESC LIMIT 1",
-            (tipo.strip(),),
-        )
-        identificador = resultado[0]["id"] if resultado else None
         return self.buscar_peca(identificador)
 
     def listar_pecas(self):
-        return self.bd.listar_pecas()
+        return [Peca_Serial.de_dict(p) for p in self.bd.listar_pecas()]
 
     def buscar_peca(self, id_peca):
         resultado = self.bd.get_por_coluna("peca", "id", id_peca)
-        return resultado[0] if resultado else None
+        return Peca_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_estoque(self, id_peca, quantidade):
         quantidade = self._validar_quantidade(quantidade, "quantidade")
@@ -203,6 +209,11 @@ class Controlador:
             raise ValueError("Peça não encontrada.")
         return peca
 
+    def excluir_peca(self, id_peca):
+        self._exigir(id_peca, "ID da peça")
+        self.bd.delete("peca", "id", id_peca)
+        return True
+
     # ---------- Peças associadas a carros ----------
     def associar_peca_ao_carro(self, id_peca, placa_carro, quantidade):
         quantidade = self._validar_quantidade(
@@ -220,7 +231,14 @@ class Controlador:
         return self.listar_pecas_do_carro(placa)
 
     def listar_pecas_do_carro(self, placa_carro):
-        return self.bd.get_pecas_do_carro(placa_carro.strip().upper())
+        dados = self.bd.get_pecas_do_carro(placa_carro.strip().upper())
+        return [
+            PecaCarro_Serial(
+                id_peca=p["id"],
+                peca_carro=placa_carro.strip().upper(),
+                qtdpeca=p["qtdpeca"]
+            ) for p in dados
+        ]
 
     # ---------- Atendimentos e histórico ----------
     def registrar_atendimento(
@@ -242,30 +260,24 @@ class Controlador:
         placa = placa_carro.strip().upper()
         cpf = cpf_cliente.strip()
 
-        self.bd.set(
-            "atendimento",
-            {
-                "status": status,
-                "id_mecanico": id_mecanico,
-                "placa_carro": placa,
-                "cpf_cliente": cpf,
-            },
-        )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM atendimento WHERE id_mecanico = ? AND placa_carro = ? AND cpf_cliente = ? ORDER BY id DESC LIMIT 1",
-            (id_mecanico, placa, cpf),
-        )
-        id_atendimento = resultado[0]["id"] if resultado else None
+        sql_atendimento = """
+            INSERT INTO atendimento (status, id_mecanico, placa_carro, cpf_cliente)
+            VALUES (?, ?, ?, ?)
+        """
+        sql_historico = """
+            INSERT INTO historico_atendimento (id_atendimento, data_abertura, data_fechamento, desc_atendimento)
+            VALUES (?, ?, ?, ?)
+        """
 
-        self.bd.set(
-            "historico_atendimento",
-            {
-                "id_atendimento": id_atendimento,
-                "data_abertura": data_abertura,
-                "data_fechamento": None,
-                "desc_atendimento": desc_atendimento,
-            },
-        )
+        ids = self.bd.executar_transacao([
+            (sql_atendimento, (status, id_mecanico, placa, cpf))
+        ])
+        id_atendimento = ids[0]
+
+        self.bd.executar_transacao([
+            (sql_historico, (id_atendimento, data_abertura, None, desc_atendimento))
+        ])
+
         return self.buscar_atendimento(id_atendimento)
 
     def listar_atendimentos(self):
@@ -295,4 +307,25 @@ class Controlador:
         return self.buscar_atendimento(id_atendimento)
 
     def buscar_historico_atendimento(self, id_atendimento):
-        return self.bd.buscar_historico_atendimento(id_atendimento)
+        dados = self.bd.buscar_historico_atendimento(id_atendimento)
+        return [Historico_Atendimento_Serial.de_dict(h) for h in dados]
+
+    def buscar_historico_por_cliente(self, cpf_cliente):
+        self._exigir(cpf_cliente, "CPF do cliente")
+        return self.bd.get_historico_por_cliente(cpf_cliente.strip())
+
+    def buscar_historico_por_carro(self, placa_carro):
+        self._exigir(placa_carro, "placa do carro")
+        return self.bd.get_historico_por_carro(placa_carro.strip().upper())
+
+    def buscar_historico_por_mecanico(self, id_mecanico):
+        self._exigir(id_mecanico, "ID do mecânico")
+        return self.bd.get_historico_por_mecanico(id_mecanico)
+
+    def buscar_historico_por_peca(self, id_peca):
+        self._exigir(id_peca, "ID da peça")
+        return self.bd.get_historico_por_peca(id_peca)
+
+    def buscar_historico_por_status(self, status):
+        self._exigir(status, "status")
+        return self.bd.get_historico_por_status(status)

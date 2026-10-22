@@ -1,12 +1,12 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 import json
 
+@dataclass
 class Peca_Serial:
-    def __init__(self,tipo=None, id=0, modelo=None, qtd=0):
-        self.tipo = tipo
-        self.id = id
-        self.modelo = modelo
-        self.qtd = qtd
+    tipo: str = None
+    id: int = 0
+    modelo: str = None
+    qtd: int = 0
 
     def para_dict(self) -> dict:
         return asdict(self)
@@ -17,4 +17,3 @@ class Peca_Serial:
     @classmethod
     def de_dict(cls, dados: dict) -> "Peca_Serial":
         return cls(**dados)
-    

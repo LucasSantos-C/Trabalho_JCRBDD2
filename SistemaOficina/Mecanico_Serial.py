@@ -7,7 +7,11 @@ class Mecanico_Serial:
         self.id = id
         self.nome = nome
         self.telefone = telefone
+<<<<<<< HEAD:SistemaOficina/Mecanico_Serial copy.py
         self.especilidade = especialidade
+=======
+        self.especialidade = especialidade
+>>>>>>> e27347e81f2350821c7457913e646e512e495dbb:SistemaOficina/Mecanico_Serial.py
 
     def para_dict(self) -> dict:
         return asdict(self)
