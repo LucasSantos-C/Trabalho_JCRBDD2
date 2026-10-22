@@ -26,6 +26,7 @@ class InterfaceUsuario:
             "3": ("Buscar por CPF", self._buscar_cliente),
             "4": ("Atualizar", self._atualizar_cliente),
             "5": ("Deletar", self._deletar_cliente), 
+            "6": ("Histórico de atendimentos", self._consultar_historico_cliente),
         }, voltar = True)
 
     def menu_carro(self):
@@ -35,7 +36,8 @@ class InterfaceUsuario:
             "3": ("Buscar por placa", self._buscar_carro),
             "4": ("Atualizar", self._atualizar_carro),
             "5": ("Associar peça ao carro", self._associar_peca),
-            "6": ("Listar peças ao carro", self._listar_pecas_do_carro), 
+            "6": ("Listar peças ao carro", self._listar_pecas_do_carro),
+            "7": ("Histórico de atendimentos", self._consultar_historico_carro),
         }, voltar = True)
 
     def menu_mecanico(self):
@@ -44,6 +46,7 @@ class InterfaceUsuario:
             "2": ("Listar", lambda: self._exibir(self.controlador.listar_mecanicos())),
             "3": ("Buscar por ID", self._buscar_mecanico),
             "4": ("Atualizar", self._atualizar_mecanico),
+            "5": ("Histórico de atendimentos", self._consultar_historico_mecanico),
         }, voltar = True)
 
     def menu_peca(self):
@@ -52,7 +55,8 @@ class InterfaceUsuario:
             "2": ("Listar", lambda: self._exibir(self.controlador.listar_pecas())),
             "3": ("Buscar por ID", self._buscar_peca),
             "4": ("Definir quantidade em estoque", self._atualizar_estoque),
-            "5": ("Adicionar ao estoque", self._adicionar_estoque), 
+            "5": ("Adicionar ao estoque", self._adicionar_estoque),
+            "6": ("Histórico de atendimentos", self._consultar_historico_peca),
         }, voltar = True)
 
     def menu_atendimento(self):
@@ -61,7 +65,8 @@ class InterfaceUsuario:
             "2": ("Listar", lambda: self._exibir(self.controlador.listar_atendimentos())),
             "3": ("Buscar detalhes por ID", self._buscar_atendimento),
             "4": ("Atualizar status", self._atualizar_status),
-            "5": ("Consultar histórico", self._consultar_historico), 
+            "5": ("Consultar histórico", self._consultar_historico),
+            "6": ("Consultar histórico por status", self._consultar_historico_status),
         }, voltar = True)
        
 #   =================  CLIENTES  =================
