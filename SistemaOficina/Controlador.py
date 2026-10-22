@@ -149,11 +149,11 @@ class Controlador:
         return self.buscar_mecanico(identificador)
 
     def listar_mecanicos(self):
-        return self.bd.listar_mecanicos()
+        return [Mecanico_Serial.de_dict(m) for m in self.bd.listar_mecanicos()]
 
     def buscar_mecanico(self, id_mecanico):
         resultado = self.bd.get_por_coluna("mecanico", "id", id_mecanico)
-        return resultado[0] if resultado else None
+        return Mecanico_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_mecanico(self, id_mecanico, nome, telefone=None, especialidade=None):
         self._exigir(nome, "nome")
