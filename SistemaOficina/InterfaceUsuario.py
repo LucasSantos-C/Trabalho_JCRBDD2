@@ -1,4 +1,5 @@
 from Controlador import Controlador
+import subprocess
 
 class InterfaceUsuario:
     def __init__(self, controlador=None):
@@ -20,7 +21,7 @@ class InterfaceUsuario:
     def menu_cliente(self):
         self._loop("CLIENTES", {
             "1": ("Cadastrar", self._cadastrar_cliente),
-            "2": ("Listar", self._exibir(self._controlador.listar_cliente())),
+            "2": ("Listar", lambda: self._exibir(self._controlador.listar_cliente())),
             "3": ("Buscar por CPF", self._buscar_cliente),
             "4": ("Atualizar", self._atualizar_cliente),
             "5": ("Deletar", self._deletar_cliente), 
@@ -29,17 +30,17 @@ class InterfaceUsuario:
     def menu_carro(self):
         self._loop("CARROS", {
             "1": ("Cadastrar", self._cadastrar_carro),
-            "2": ("Listar", self._exibir(self._controlador.listar_carro())),
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_carros())),
             "3": ("Buscar por placa", self._buscar_carro),
             "4": ("Atualizar", self._atualizar_carro),
-            "5": ("Associar peça ao carro", self._associar_carro),
-            "6": ("Listar peças ao carro", self._listar_peca_cliente), 
+            "5": ("Associar peça ao carro", self._associar_peca),
+            "6": ("Listar peças ao carro", self._listar_pecas_do_carro), 
         }, voltar = True)
 
     def menu_mecanico(self):
         self._loop("MECANICOS", {
             "1": ("Cadastrar", self._cadastrar_mecanico),
-            "2": ("Listar", self._exibir(self._controlador.listar_mecanico())),
+            "2": ("Listar", lambda: self._exibir(self._controlador.listar_mecanico())),
             "3": ("Buscar por ID", self._buscar_mecanico),
             "4": ("Atualizar", self._atualizar_mecanico),
         }, voltar = True)
@@ -47,7 +48,7 @@ class InterfaceUsuario:
     def menu_peca(self):
         self._loop("PEÇAS", {
             "1": ("Cadastrar peça", self._cadastrar_peca),
-            "2": ("Listar", self._exibir(self._controlador.listar_peca())),
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_pecas())),
             "3": ("Buscar por ID", self._buscar_peca),
             "4": ("Definir quantidade em estoque", self._atualizar_estoque),
             "5": ("Adicionar ao estoque", self._adicionar_estoque), 
@@ -56,20 +57,20 @@ class InterfaceUsuario:
     def menu_atendimento(self):
         self._loop("ATENDIMENTOS", {
             "1": ("Registrar atendimento", self._registrar_atendimento),
-            "2": ("Listar", self._exibir(self._controlador.listar_atendimentos())),
-            "3": ("Buscar detalhes por ID", self._buscar_atendimentos),
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_atendimentos())),
+            "3": ("Buscar detalhes por ID", self._buscar_atendimento),
             "4": ("Atualizar status", self._atualizar_status),
             "5": ("Consultar histórico", self._consultar_historico), 
         }, voltar = True)
        
 #   =================  CLIENTES  ================= 
 
-    def _cadastrar_clientes(self):
-        cliente = self.controlador.cadastrar_cliente(
-            cpf = self._ler_texto("CPF: "),
-            nome = self._ler_texto("Nome: "),
-            telefone = self._ler_opcional("Telefone (opcional): "),
-            endereco = self._ler_opcional("Endereço (opcional): "),
+    def _cadastrar_cliente(self):
+        cliente= self.controlador.cadastrar_cliente(
+            cpf= self._ler_texto("CPF: "),
+            nome= self._ler_texto("Nome: "),
+            telefone= self._ler_opcional("Telefone (opcional): "),
+            endereco= self._ler_opcional("Endereço (opcional): "),
         )
         print(f"Cliente: {self._exibir(cliente)} Cadastrado com sucesso...")
 
@@ -86,7 +87,7 @@ class InterfaceUsuario:
         print("Cliente atualizado:")
         self._exibir(cliente)
  
-    def _excluir_cliente(self):
+    def _deletar_cliente(self):
         cpf = self._ler_texto("CPF do cliente: ")
         if self._confirmar("Confirma a exclusão?"):
             self.controlador.excluir_cliente(cpf)
@@ -242,6 +243,7 @@ class InterfaceUsuario:
             for chave, (nome, _) in opcoes.items():
                 print(f"{chave} - {nome}")
             print("0 - " + ("Voltar" if voltar else "Sair"))
+            print(f"==========================")
  
             escolha = input("Opção: ").strip()
             if escolha == "0":
@@ -250,14 +252,15 @@ class InterfaceUsuario:
                 self._executar(opcoes[escolha][1])
             else:
                 print("Opção inválida.")
+
+            subprocess.run(["cmd", "/c", "cls"], check=False)
  
     def _executar(self, acao):
-        """Executa uma ação e converte qualquer erro em mensagem amigável."""
         try:
             acao()
-        except ValueError as erro:  # regras de negócio do Controlador
+        except ValueError as erro:  
             print(f"Aviso: {erro}")
-        except Exception as erro:  # falhas inesperadas (BD etc.)
+        except Exception as erro:  
             print(f"Erro inesperado: {erro}")
  
 # ================= EXIBIÇÃO =================
@@ -265,7 +268,7 @@ class InterfaceUsuario:
     @staticmethod
     def _exibir(resultado):
         if not resultado:
-            print("Nenhum registro encontrado.")
+            print("Nenhum registro encontrado!")
         elif isinstance(resultado, (list, tuple)):
             for item in resultado:
                 print(" -", dict(item) if hasattr(item, "keys") else item)
@@ -280,7 +283,7 @@ class InterfaceUsuario:
             valor = input(msg).strip()
             if valor:
                 return valor
-            print("O campo não pode ficar vazio.")
+            print("O campo está vazio!")
  
     @staticmethod
     def _ler_opcional(msg):
@@ -293,7 +296,7 @@ class InterfaceUsuario:
             try:
                 return int(input(msg).strip())
             except ValueError:
-                print("Digite um número inteiro válido.")
+                print("Digite um número inteiro válido!")
  
     @staticmethod
     def _confirmar(msg):
