@@ -8,7 +8,7 @@ class ObjetoAcessaDados:
     def conectar(self):
         conexao = sqlite3.connect(self.nome_banco)
         conexao.row_factory = sqlite3.Row
-        conexao.execute("PRAGMA foreign_keys = ON")  # <--- Adicionar esta linha
+        conexao.execute("PRAGMA foreign_keys = ON")
         return conexao
 
     def executar_sql(self, sql, parametros=()):
