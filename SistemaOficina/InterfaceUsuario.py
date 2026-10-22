@@ -18,12 +18,11 @@ class InterfaceUsuario:
        self._loop("OFICINA", menu)
        print("Encerrando o sistema...")
        
-#   =================   MENUS   ================= 
-
+#   =================   MENUS   =================
     def menu_cliente(self):
         self._loop("CLIENTES", {
             "1": ("Cadastrar", self._cadastrar_cliente),
-            "2": ("Listar", lambda: self._exibir(self.controlador.listar_clientes())), # Corrigido para listar_clientes e self.controlador
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_clientes())),
             "3": ("Buscar por CPF", self._buscar_cliente),
             "4": ("Atualizar", self._atualizar_cliente),
             "5": ("Deletar", self._deletar_cliente), 
@@ -42,7 +41,7 @@ class InterfaceUsuario:
     def menu_mecanico(self):
         self._loop("MECANICOS", {
             "1": ("Cadastrar", self._cadastrar_mecanico),
-            "2": ("Listar", lambda: self._exibir(self.controlador.listar_mecanicos())), # Corrigido para listar_mecanicos
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_mecanicos())),
             "3": ("Buscar por ID", self._buscar_mecanico),
             "4": ("Atualizar", self._atualizar_mecanico),
         }, voltar = True)
@@ -65,8 +64,7 @@ class InterfaceUsuario:
             "5": ("Consultar histórico", self._consultar_historico), 
         }, voltar = True)
        
-#   =================  CLIENTES  ================= 
-
+#   =================  CLIENTES  =================
     def _cadastrar_cliente(self):
         cliente= self.controlador.cadastrar_cliente(
             cpf= self._ler_texto("CPF: "),
@@ -97,7 +95,6 @@ class InterfaceUsuario:
             print("Cliente excluído.")
  
 # ================= CARROS =================
-
     def _cadastrar_carro(self):
         carro = self.controlador.cadastrar_carro(
             placa=self._ler_texto("Placa: "),
@@ -137,7 +134,6 @@ class InterfaceUsuario:
         )
  
 # ================= MECÂNICOS =================
-
     def _cadastrar_mecanico(self):
         mecanico = self.controlador.cadastrar_mecanico(
             nome=self._ler_texto("Nome: "),
@@ -161,7 +157,6 @@ class InterfaceUsuario:
         self._exibir(mecanico)
  
 # ================= PEÇAS =================
-
     def _cadastrar_peca(self):
         peca = self.controlador.cadastrar_peca(
             tipo=self._ler_texto("Tipo da peça: "),
@@ -191,7 +186,6 @@ class InterfaceUsuario:
         self._exibir(peca)
  
 # ================= ATENDIMENTOS =================
-
     def _registrar_atendimento(self):
         status = self._escolher_status()
         atendimento = self.controlador.registrar_atendimento(
@@ -237,7 +231,6 @@ class InterfaceUsuario:
             print("Opção inválida.")
  
 # ================= INFRAESTRUTURA DE MENU =================
-
     def _loop(self, titulo, opcoes, voltar=False):
         while True:
             subprocess.run(["cmd", "/c", "cls"], check=False)
@@ -267,7 +260,6 @@ class InterfaceUsuario:
             print(f"Erro inesperado: {erro}")
  
 # ================= EXIBIÇÃO =================
-
     @staticmethod
     def _exibir(resultado):
         if not resultado:
@@ -296,7 +288,6 @@ class InterfaceUsuario:
         print("=" * 35)
 
 # ================= LEITURA DE ENTRADA =================
-
     @staticmethod
     def _ler_texto(msg):
         while True:
