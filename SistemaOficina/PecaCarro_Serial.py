@@ -3,17 +3,16 @@ import json
 
 @dataclass
 class PecaCarro_Serial:
-    def __init__(self, id_peca, peca_carro, qtdpeca):
-        self.id_peca = id_peca
-        self.peca_carro = peca_carro
-        self.qtdpeca = qtdpeca
+    id_peca: int = None
+    peca_carro: str = None
+    qtdpeca: int = 0
 
-    def para_dict(self) -> dict:
+    def para_dict(self):
         return asdict(self)
         
-    def para_json(self) -> dict:
+    def para_json(self):
         return json.dumps(asdict(self), ensure_ascii=False)
     
     @classmethod
-    def de_dict(cls, dados: dict) -> "PecaCarro_Serial":
+    def de_dict(cls, dados: dict):
         return cls(**dados)
