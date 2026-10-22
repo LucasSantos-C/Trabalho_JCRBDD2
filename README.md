@@ -1,4 +1,4 @@
-# Trabalho_JCRBDD2
+# Trabalho JCRBDD2
 Objetivo do Sistema: Implantar um sistema com um <b>banco de dados relacional</b> para uma oficina mecânica automotiva
 
 ## Integrantes: 
