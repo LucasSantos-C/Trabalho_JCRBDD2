@@ -291,6 +291,7 @@ class ObjetoAcessaDados:
             JOIN peca_carro ON peca.id = peca_carro.id_peca
             JOIN carro ON peca_carro.placa_carro = carro.placa
             JOIN atendimento ON carro.placa = atendimento.placa_carro
+            LEFT JOIN cliente ON atendimento.cpf_cliente = cliente.cpf
             LEFT JOIN historico_atendimento ON atendimento.id = historico_atendimento.id_atendimento
             WHERE peca.id = ?
             ORDER BY historico_atendimento.data_abertura DESC
