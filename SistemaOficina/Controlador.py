@@ -1,5 +1,11 @@
 from datetime import datetime
 from ObjetoAcessaDados import ObjetoAcessaDados
+from Cliente_Serial import Cliente_Serial
+from Carro_Serial import Carro_Serial
+from Mecanico_Serial import Mecanico_Serial
+from Peca_Serial import Peca_Serial
+from PecaCarro_Serial import PecaCarro_Serial
+from Historico_Atendimento_Serial import Historico_Atendimento_Serial
 
 
 class Controlador:
@@ -38,11 +44,11 @@ class Controlador:
         return self.buscar_cliente(cpf.strip())
 
     def listar_clientes(self):
-        return self.bd.listar_clientes()
+        return [Cliente_Serial.de_dict(c) for c in self.bd.listar_clientes()]
 
     def buscar_cliente(self, cpf):
         resultado = self.bd.get_por_coluna("cliente", "cpf", cpf)
-        return resultado[0] if resultado else None
+        return Cliente_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_cliente(self, cpf, nome, telefone=None, endereco=None):
         self._exigir(cpf, "CPF")
