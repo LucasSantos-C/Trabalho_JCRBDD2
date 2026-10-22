@@ -3,18 +3,17 @@ import json
 
 @dataclass
 class Historico_Atendimento_Serial:
-    def __init__(self, data_abertura, data_fechamento, id_atendimento, desc_atendimento):
-        self.data_abertura = data_abertura
-        self.data_fechamento = data_fechamento
-        self.id_atendimento = id_atendimento
-        self.desc_atendimento = desc_atendimento
+    id_atendimento: int = None
+    data_abertura: str = None
+    data_fechamento: str = None
+    desc_atendimento: str = None
 
-    def para_dict(self) -> dict:
+    def para_dict(self):
         return asdict(self)
             
-    def para_json(self) -> dict:
+    def para_json(self):
         return json.dumps(asdict(self), ensure_ascii=False)
         
     @classmethod
-    def de_dict(cls, dados: dict) -> "Historico_Atendimento_Serial":
+    def de_dict(cls, dados: dict):
         return cls(**dados)
