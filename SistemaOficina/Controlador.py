@@ -133,7 +133,7 @@ class Controlador:
     # ---------- Mecânicos ----------
     def cadastrar_mecanico(self, nome, telefone=None, especialidade=None):
         self._exigir(nome, "nome")
-        self.bd.set(
+        identificador = self.bd.set(
             "mecanico",
             {
                 "nome": nome.strip(),
@@ -141,11 +141,6 @@ class Controlador:
                 "especialidade": especialidade,
             },
         )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM mecanico WHERE nome = ? ORDER BY id DESC LIMIT 1",
-            (nome.strip(),),
-        )
-        identificador = resultado[0]["id"] if resultado else None
         return self.buscar_mecanico(identificador)
         
     def listar_mecanicos(self):
@@ -181,14 +176,9 @@ class Controlador:
     def cadastrar_peca(self, tipo, modelo=None, qtd=0):
         self._exigir(tipo, "tipo")
         qtd = self._validar_quantidade(qtd, "quantidade")
-        self.bd.set(
+        identificador = self.bd.set(
             "peca", {"tipo": tipo.strip(), "modelo": modelo, "qtd": qtd}
         )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM peca WHERE tipo = ? ORDER BY id DESC LIMIT 1",
-            (tipo.strip(),),
-        )
-        identificador = resultado[0]["id"] if resultado else None
         return self.buscar_peca(identificador)
 
     def listar_pecas(self):
