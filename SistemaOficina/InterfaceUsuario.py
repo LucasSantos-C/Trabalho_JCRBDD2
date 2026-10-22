@@ -2,6 +2,8 @@ from Controlador import Controlador
 import subprocess
 
 class InterfaceUsuario:
+    STATUS_ATENDIMENTO = ["Em Andamento", "Aguardando Peças", "Concluído", "Cancelado"]
+
     def __init__(self, controlador=None):
         self.controlador = controlador or Controlador()
     
