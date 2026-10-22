@@ -299,9 +299,8 @@ class Controlador:
     def listar_atendimentos(self):
         return self.bd.listar_atendimentos()
 
-    def buscar_historico_atendimento(self, id_atendimento):
-        dados = self.bd.buscar_historico_atendimento(id_atendimento)
-        return [Historico_Atendimento_Serial.de_dict(h) for h in dados]
+    def buscar_atendimento(self, id_atendimento):
+        return self.bd.get_detalhes_atendimento(id_atendimento)
 
     def atualizar_status_atendimento(self, id_atendimento, status, finalizar=False):
         self._exigir(status, "status")
@@ -324,7 +323,8 @@ class Controlador:
         return self.buscar_atendimento(id_atendimento)
 
     def buscar_historico_atendimento(self, id_atendimento):
-        return self.bd.buscar_historico_atendimento(id_atendimento)
+        dados = self.bd.buscar_historico_atendimento(id_atendimento)
+        return [Historico_Atendimento_Serial.de_dict(h) for h in dados]
 
     def buscar_historico_por_cliente(self, cpf_cliente):
         self._exigir(cpf_cliente, "CPF do cliente")
