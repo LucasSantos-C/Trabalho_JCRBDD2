@@ -1,4 +1,4 @@
-ffrom dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass
 import json
 
 @dataclass
