@@ -7,6 +7,7 @@ class Mecanico_Serial:
         self.id = id
         self.nome = nome
         self.telefone = telefone
+        self.especilidade = especialidade
 
     def para_dict(self) -> dict:
         return asdict(self)
