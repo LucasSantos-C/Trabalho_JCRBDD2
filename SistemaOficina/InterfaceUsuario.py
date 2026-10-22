@@ -93,6 +93,11 @@ class InterfaceUsuario:
         if self._confirmar("Confirma a exclusão?"):
             self.controlador.excluir_cliente(cpf)
             print("Cliente excluído.")
+
+    def _consultar_historico_cliente(self):
+        cpf = self._ler_texto("CPF do cliente: ")
+        resultado = self.controlador.buscar_historico_por_cliente(cpf)
+        self._exibir(resultado)
  
 # ================= CARROS =================
     def _cadastrar_carro(self):
@@ -132,6 +137,10 @@ class InterfaceUsuario:
         self._exibir(
             self.controlador.listar_pecas_do_carro(self._ler_texto("Placa do carro: "))
         )
+    def _consultar_historico_carro(self):
+        placa = self._ler_texto("Placa do carro: ")
+        resultado = self.controlador.buscar_historico_por_carro(placa)
+        self._exibir(resultado)
  
 # ================= MECÂNICOS =================
     def _cadastrar_mecanico(self):
@@ -155,6 +164,11 @@ class InterfaceUsuario:
         )
         print("\nMecânico atualizado:")
         self._exibir(mecanico)
+
+    def _consultar_historico_mecanico(self):
+        id_mecanico = self._ler_int("ID do mecânico: ")
+        resultado = self.controlador.buscar_historico_por_mecanico(id_mecanico)
+        self._exibir(resultado)
  
 # ================= PEÇAS =================
     def _cadastrar_peca(self):
@@ -184,6 +198,11 @@ class InterfaceUsuario:
         )
         print("Estoque atualizado:")
         self._exibir(peca)
+
+    def _consultar_historico_peca(self):
+        id_peca = self._ler_int("ID da peça: ")
+        resultado = self.controlador.buscar_historico_por_peca(id_peca)
+        self._exibir(resultado)
  
 # ================= ATENDIMENTOS =================
     def _registrar_atendimento(self):
@@ -219,7 +238,12 @@ class InterfaceUsuario:
                 self._ler_int("ID do atendimento: ")
             )
         )
- 
+
+    def _consultar_historico_status(self):
+        status = self._escolher_status()
+        resultado = self.controlador.buscar_historico_por_status(status)
+        self._exibir(resultado)
+
     def _escolher_status(self):
         print("Status disponíveis:")
         for i, s in enumerate(self.STATUS_ATENDIMENTO, start=1):
