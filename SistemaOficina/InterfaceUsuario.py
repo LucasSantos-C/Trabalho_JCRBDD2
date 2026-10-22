@@ -254,10 +254,9 @@ class InterfaceUsuario:
                 return
             if escolha in opcoes:
                 self._executar(opcoes[escolha][1])
-                input("\nPressione Enter para continuar...")
             else:
                 print("Opção inválida.")
-                input("\nPressione Enter para continuar...")
+            input("\nPressione Enter para continuar...")
 
     def _executar(self, acao):
         try:
