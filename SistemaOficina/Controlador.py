@@ -270,30 +270,24 @@ class Controlador:
         placa = placa_carro.strip().upper()
         cpf = cpf_cliente.strip()
 
-        self.bd.set(
-            "atendimento",
-            {
-                "status": status,
-                "id_mecanico": id_mecanico,
-                "placa_carro": placa,
-                "cpf_cliente": cpf,
-            },
-        )
-        resultado = self.bd.executar_sql(
-            "SELECT id FROM atendimento WHERE id_mecanico = ? AND placa_carro = ? AND cpf_cliente = ? ORDER BY id DESC LIMIT 1",
-            (id_mecanico, placa, cpf),
-        )
-        id_atendimento = resultado[0]["id"] if resultado else None
+        sql_atendimento = """
+            INSERT INTO atendimento (status, id_mecanico, placa_carro, cpf_cliente)
+            VALUES (?, ?, ?, ?)
+        """
+        sql_historico = """
+            INSERT INTO historico_atendimento (id_atendimento, data_abertura, data_fechamento, desc_atendimento)
+            VALUES (?, ?, ?, ?)
+        """
 
-        self.bd.set(
-            "historico_atendimento",
-            {
-                "id_atendimento": id_atendimento,
-                "data_abertura": data_abertura,
-                "data_fechamento": None,
-                "desc_atendimento": desc_atendimento,
-            },
-        )
+        ids = self.bd.executar_transacao([
+            (sql_atendimento, (status, id_mecanico, placa, cpf))
+        ])
+        id_atendimento = ids[0]
+
+        self.bd.executar_transacao([
+            (sql_historico, (id_atendimento, data_abertura, None, desc_atendimento))
+        ])
+
         return self.buscar_atendimento(id_atendimento)
 
     def listar_atendimentos(self):
