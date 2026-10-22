@@ -147,7 +147,7 @@ class Controlador:
         )
         identificador = resultado[0]["id"] if resultado else None
         return self.buscar_mecanico(identificador)
-
+        
     def listar_mecanicos(self):
         return [Mecanico_Serial.de_dict(m) for m in self.bd.listar_mecanicos()]
 
@@ -192,11 +192,11 @@ class Controlador:
         return self.buscar_peca(identificador)
 
     def listar_pecas(self):
-        return self.bd.listar_pecas()
+        return [Peca_Serial.de_dict(p) for p in self.bd.listar_pecas()]
 
     def buscar_peca(self, id_peca):
         resultado = self.bd.get_por_coluna("peca", "id", id_peca)
-        return resultado[0] if resultado else None
+        return Peca_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_estoque(self, id_peca, quantidade):
         quantidade = self._validar_quantidade(quantidade, "quantidade")
@@ -241,7 +241,14 @@ class Controlador:
         return self.listar_pecas_do_carro(placa)
 
     def listar_pecas_do_carro(self, placa_carro):
-        return self.bd.get_pecas_do_carro(placa_carro.strip().upper())
+        dados = self.bd.get_pecas_do_carro(placa_carro.strip().upper())
+        return [
+            PecaCarro_Serial(
+                id_peca=p["id"],
+                peca_carro=placa_carro.strip().upper(),
+                qtdpeca=p["qtdpeca"]
+            ) for p in dados
+        ]
 
     # ---------- Atendimentos e histórico ----------
     def registrar_atendimento(
@@ -292,8 +299,9 @@ class Controlador:
     def listar_atendimentos(self):
         return self.bd.listar_atendimentos()
 
-    def buscar_atendimento(self, id_atendimento):
-        return self.bd.get_detalhes_atendimento(id_atendimento)
+    def buscar_historico_atendimento(self, id_atendimento):
+        dados = self.bd.buscar_historico_atendimento(id_atendimento)
+        return [Historico_Atendimento_Serial.de_dict(h) for h in dados]
 
     def atualizar_status_atendimento(self, id_atendimento, status, finalizar=False):
         self._exigir(status, "status")
