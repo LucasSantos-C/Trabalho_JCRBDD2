@@ -296,3 +296,38 @@ class Controlador:
 
     def buscar_historico_atendimento(self, id_atendimento):
         return self.bd.buscar_historico_atendimento(id_atendimento)
+
+def excluir_carro(self, placa):
+        self._exigir(placa, "placa")
+        self.bd.delete("carro", "placa", placa.strip().upper())
+        return True
+
+    def excluir_mecanico(self, id_mecanico):
+        self._exigir(id_mecanico, "ID do mecânico")
+        self.bd.delete("mecanico", "id", id_mecanico)
+        return True
+
+    def excluir_peca(self, id_peca):
+        self._exigir(id_peca, "ID da peça")
+        self.bd.delete("peca", "id", id_peca)
+        return True
+
+    def buscar_historico_por_cliente(self, cpf_cliente):
+        self._exigir(cpf_cliente, "CPF do cliente")
+        return self.bd.get_historico_por_cliente(cpf_cliente.strip())
+
+    def buscar_historico_por_carro(self, placa_carro):
+        self._exigir(placa_carro, "placa do carro")
+        return self.bd.get_historico_por_carro(placa_carro.strip().upper())
+
+    def buscar_historico_por_mecanico(self, id_mecanico):
+        self._exigir(id_mecanico, "ID do mecânico")
+        return self.bd.get_historico_por_mecanico(id_mecanico)
+
+    def buscar_historico_por_peca(self, id_peca):
+        self._exigir(id_peca, "ID da peça")
+        return self.bd.get_historico_por_peca(id_peca)
+
+    def buscar_historico_por_status(self, status):
+        self._exigir(status, "status")
+        return self.bd.get_historico_por_status(status)
