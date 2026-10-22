@@ -290,4 +290,44 @@ class Controlador:
         return self.bd.get_detalhes_atendimento(id_atendimento)
 
     def atualizar_status_atendimento(self, id_atendimento, status, finalizar=False):
-        self._exigir(status, "status
+        self._exigir(status, "status")
+        if not self.buscar_atendimento(id_atendimento):
+            raise ValueError("Atendimento não encontrado.")
+
+        self.bd.update(
+            "atendimento", {"id": id_atendimento, "status": status}, "id"
+        )
+        if finalizar:
+            data_fechamento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.bd.update(
+                "historico_atendimento",
+                {
+                    "id_atendimento": id_atendimento,
+                    "data_fechamento": data_fechamento,
+                },
+                "id_atendimento",
+            )
+        return self.buscar_atendimento(id_atendimento)
+
+    def buscar_historico_atendimento(self, id_atendimento):
+        return self.bd.buscar_historico_atendimento(id_atendimento)
+
+    def buscar_historico_por_cliente(self, cpf_cliente):
+        self._exigir(cpf_cliente, "CPF do cliente")
+        return self.bd.get_historico_por_cliente(cpf_cliente.strip())
+
+    def buscar_historico_por_carro(self, placa_carro):
+        self._exigir(placa_carro, "placa do carro")
+        return self.bd.get_historico_por_carro(placa_carro.strip().upper())
+
+    def buscar_historico_por_mecanico(self, id_mecanico):
+        self._exigir(id_mecanico, "ID do mecânico")
+        return self.bd.get_historico_por_mecanico(id_mecanico)
+
+    def buscar_historico_por_peca(self, id_peca):
+        self._exigir(id_peca, "ID da peça")
+        return self.bd.get_historico_por_peca(id_peca)
+
+    def buscar_historico_por_status(self, status):
+        self._exigir(status, "status")
+        return self.bd.get_historico_por_status(status)
