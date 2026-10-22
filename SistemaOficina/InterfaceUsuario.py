@@ -1,6 +1,6 @@
 from Controlador import Controlador
 import subprocess
-
+ 
 class InterfaceUsuario:
     STATUS_ATENDIMENTO = ["Em Andamento", "Aguardando Peças", "Concluído", "Cancelado"]
 
