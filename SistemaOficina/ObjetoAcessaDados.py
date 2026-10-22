@@ -17,9 +17,9 @@ class ObjetoAcessaDados:
                 cursor = conexao.cursor()
                 cursor.execute(sql, parametros)
                 conexao.commit()
-                if sql.strip().upper().startswith("SELECT"):
-                    return [dict(row) for row in cursor.fetchall()]
-                return True
+            if sql.strip().upper().startswith("SELECT"):
+                return [dict(row) for row in cursor.fetchall()]
+            return cursor.lastrowid if sql.lstrip().upper().startswith("INSERT") else True
         except sqlite3.Error as erro:
             print(f"Erro ao executar SQL: {erro}")
             return False
