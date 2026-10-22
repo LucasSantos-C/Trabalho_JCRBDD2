@@ -150,7 +150,7 @@ class ObjetoAcessaDados:
             WHERE id_atendimento = ?
             ORDER BY data_abertura DESC
         """
-        return self.executar_sql(sql, (id_atendimento,)
+        return self.executar_sql(sql, (id_atendimento,))
 
     def get_pecas_do_carro(self, placa_carro):
         sql = """
