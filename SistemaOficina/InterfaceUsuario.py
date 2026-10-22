@@ -23,7 +23,7 @@ class InterfaceUsuario:
     def menu_cliente(self):
         self._loop("CLIENTES", {
             "1": ("Cadastrar", self._cadastrar_cliente),
-            "2": ("Listar", lambda: self._exibir(self._controlador.listar_cliente())),
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_clientes())), # Corrigido para listar_clientes e self.controlador
             "3": ("Buscar por CPF", self._buscar_cliente),
             "4": ("Atualizar", self._atualizar_cliente),
             "5": ("Deletar", self._deletar_cliente), 
@@ -42,7 +42,7 @@ class InterfaceUsuario:
     def menu_mecanico(self):
         self._loop("MECANICOS", {
             "1": ("Cadastrar", self._cadastrar_mecanico),
-            "2": ("Listar", lambda: self._exibir(self._controlador.listar_mecanico())),
+            "2": ("Listar", lambda: self._exibir(self.controlador.listar_mecanicos())), # Corrigido para listar_mecanicos
             "3": ("Buscar por ID", self._buscar_mecanico),
             "4": ("Atualizar", self._atualizar_mecanico),
         }, voltar = True)
@@ -74,7 +74,8 @@ class InterfaceUsuario:
             telefone= self._ler_opcional("Telefone (opcional): "),
             endereco= self._ler_opcional("Endereço (opcional): "),
         )
-        print(f"Cliente: {self._exibir(cliente)} Cadastrado com sucesso...")
+        print("\nCliente cadastrado com sucesso:")
+        self._exibir(cliente)
 
     def _buscar_cliente(self):
         self._exibir(self.controlador.buscar_cliente(self._ler_texto("CPF: ")))
@@ -86,7 +87,7 @@ class InterfaceUsuario:
             telefone=self._ler_opcional("Novo telefone (opcional): "),
             endereco=self._ler_opcional("Novo endereço (opcional): "),
         )
-        print("Cliente atualizado:")
+        print("\nCliente atualizado:")
         self._exibir(cliente)
  
     def _deletar_cliente(self):
@@ -105,7 +106,7 @@ class InterfaceUsuario:
             ano=self._ler_opcional("Ano (opcional): "),
             marca=self._ler_opcional("Marca (opcional): "),
         )
-        print("Carro cadastrado:")
+        print("\nCarro cadastrado:")
         self._exibir(carro)
  
     def _buscar_carro(self):
@@ -119,7 +120,7 @@ class InterfaceUsuario:
             ano=self._ler_opcional("Novo ano (opcional): "),
             marca=self._ler_opcional("Nova marca (opcional): "),
         )
-        print("Carro atualizado:")
+        print("\nCarro atualizado:")
         self._exibir(carro)
  
     def _associar_peca(self):
@@ -127,7 +128,7 @@ class InterfaceUsuario:
         id_peca = self._ler_int("ID da peça: ")
         qtd = self._ler_int("Quantidade utilizada: ")
         pecas = self.controlador.associar_peca_ao_carro(id_peca, placa, qtd)
-        print("Peças do carro após a associação:")
+        print("\nPeças do carro após a associação:")
         self._exibir(pecas)
  
     def _listar_pecas_do_carro(self):
@@ -143,7 +144,7 @@ class InterfaceUsuario:
             telefone=self._ler_opcional("Telefone (opcional): "),
             especialidade=self._ler_opcional("Especialidade (opcional): "),
         )
-        print("Mecânico cadastrado:")
+        print("\nMecânico cadastrado:")
         self._exibir(mecanico)
  
     def _buscar_mecanico(self):
@@ -156,7 +157,7 @@ class InterfaceUsuario:
             telefone=self._ler_opcional("Novo telefone (opcional): "),
             especialidade=self._ler_opcional("Nova especialidade (opcional): "),
         )
-        print("Mecânico atualizado:")
+        print("\nMecânico atualizado:")
         self._exibir(mecanico)
  
 # ================= PEÇAS =================
@@ -167,7 +168,7 @@ class InterfaceUsuario:
             modelo=self._ler_opcional("Modelo (opcional): "),
             qtd=self._ler_int("Quantidade inicial em estoque: "),
         )
-        print("Peça cadastrada:")
+        print("\nPeça cadastrada:")
         self._exibir(peca)
  
     def _buscar_peca(self):
@@ -178,7 +179,7 @@ class InterfaceUsuario:
             self._ler_int("ID da peça: "),
             self._ler_int("Nova quantidade em estoque: "),
         )
-        print("Estoque atualizado:")
+        print("\nEstoque atualizado:")
         self._exibir(peca)
  
     def _adicionar_estoque(self):
@@ -200,7 +201,7 @@ class InterfaceUsuario:
             cpf_cliente=self._ler_texto("CPF do cliente: "),
             desc_atendimento=self._ler_opcional("Descrição do serviço (opcional): ") or "",
         )
-        print("Atendimento registrado:")
+        print("\nAtendimento registrado:")
         self._exibir(atendimento)
  
     def _buscar_atendimento(self):
@@ -215,7 +216,7 @@ class InterfaceUsuario:
         atendimento = self.controlador.atualizar_status_atendimento(
             id_atd, status, finalizar=finalizar
         )
-        print("Atendimento atualizado:")
+        print("\nAtendimento atualizado:")
         self._exibir(atendimento)
  
     def _consultar_historico(self):
@@ -239,6 +240,7 @@ class InterfaceUsuario:
 
     def _loop(self, titulo, opcoes, voltar=False):
         while True:
+            subprocess.run(["cmd", "/c", "cls"], check=False)
             print(f"==========================")
             print(f"         {titulo} ")
             print(f"==========================")
@@ -252,11 +254,11 @@ class InterfaceUsuario:
                 return
             if escolha in opcoes:
                 self._executar(opcoes[escolha][1])
+                input("\nPressione Enter para continuar...")
             else:
                 print("Opção inválida.")
+                input("\nPressione Enter para continuar...")
 
-            subprocess.run(["cmd", "/c", "cls"], check=False)
- 
     def _executar(self, acao):
         try:
             acao()
@@ -270,13 +272,30 @@ class InterfaceUsuario:
     @staticmethod
     def _exibir(resultado):
         if not resultado:
-            print("Nenhum registro encontrado!")
-        elif isinstance(resultado, (list, tuple)):
-            for item in resultado:
-                print(" -", dict(item) if hasattr(item, "keys") else item)
-        else:
-            print(dict(resultado) if hasattr(resultado, "keys") else resultado)
- 
+            print("\nNenhum registro encontrado!")
+            return
+
+        items = resultado if isinstance(resultado, (list, tuple)) else [resultado]
+
+        for i, item in enumerate(items, 1):
+            if hasattr(item, "para_dict"):
+                dados = item.para_dict()
+            elif hasattr(item, "keys"):
+                dados = dict(item)
+            else:
+                dados = {"Registro": item}
+
+            print("\n" + "=" * 35)
+            if len(items) > 1:
+                print(f" Registro #{i}")
+                print("-" * 35)
+            
+            for chave, valor in dados.items():
+                chave_formatada = str(chave).replace("_", " ").title()
+                val_str = valor if valor is not None else "Não informado"
+                print(f" {chave_formatada}: {val_str}")
+        print("=" * 35)
+
 # ================= LEITURA DE ENTRADA =================
 
     @staticmethod
