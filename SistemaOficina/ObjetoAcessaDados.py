@@ -25,7 +25,7 @@ class ObjetoAcessaDados:
         except sqlite3.Error as erro:
             raise RuntimeError(f"Erro ao acessar o banco de dados: {erro}") from erro
 
-    def criar_tabelas(self):
+def criar_tabelas(self):
         try:
             with self.conectar() as conexao:
                 conexao.executescript("""
@@ -87,7 +87,7 @@ class ObjetoAcessaDados:
                     );
                 """)
         except sqlite3.Error as erro:
-            print(f"Erro ao criar tabelas: {erro}")
+            raise RuntimeError(f"Erro ao criar tabelas: {erro}") from erro
 
     def set(self, tabela, dados):
         colunas = ", ".join(dados.keys())
