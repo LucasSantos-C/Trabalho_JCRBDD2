@@ -94,11 +94,11 @@ class Controlador:
         return self.buscar_carro(placa)
 
     def listar_carros(self):
-        return self.bd.listar_carros()
+        return [Carro_Serial.de_dict(c) for c in self.bd.listar_carros()]
 
     def buscar_carro(self, placa):
         resultado = self.bd.get_por_coluna("carro", "placa", placa.strip().upper())
-        return resultado[0] if resultado else None
+        return Carro_Serial.de_dict(resultado[0]) if resultado else None
 
     def atualizar_carro(self, placa, modelo, cor=None, ano=None, marca=None):
         self._exigir(placa, "placa")
