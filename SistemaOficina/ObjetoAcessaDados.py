@@ -17,12 +17,13 @@ class ObjetoAcessaDados:
                 cursor = conexao.cursor()
                 cursor.execute(sql, parametros)
                 conexao.commit()
-            if sql.strip().upper().startswith("SELECT"):
-                return [dict(row) for row in cursor.fetchall()]
-            return cursor.lastrowid if sql.lstrip().upper().startswith("INSERT") else True
+                if sql.strip().upper().startswith("SELECT"):
+                    return [dict(row) for row in cursor.fetchall()]
+                return cursor.lastrowid if sql.lstrip().upper().startswith("INSERT") else True
+        except sqlite3.IntegrityError as erro:
+            raise ValueError(f"Operação não permitida pelo banco de dados: {erro}") from erro
         except sqlite3.Error as erro:
-            print(f"Erro ao executar SQL: {erro}")
-            return False
+            raise RuntimeError(f"Erro ao acessar o banco de dados: {erro}") from erro
 
     def criar_tabelas(self):
         try:
