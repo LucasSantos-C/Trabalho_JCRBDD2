@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass
+ffrom dataclasses import asdict, dataclass
 import json
 
 @dataclass
@@ -8,12 +8,12 @@ class Mecanico_Serial:
     telefone: str = None
     especialidade: str = None
 
-    def para_dict(self) -> dict:
+    def para_dict(self):
         return asdict(self)
         
-    def para_json(self) -> str:
+    def para_json(self):
         return json.dumps(asdict(self), ensure_ascii=False)
     
     @classmethod
-    def de_dict(cls, dados: dict) -> "Mecanico_Serial":
+    def de_dict(cls, dados: dict):
         return cls(**dados)
